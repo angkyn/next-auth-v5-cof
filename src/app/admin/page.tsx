@@ -1,11 +1,27 @@
+import { auth } from "@/auth";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import getSession from "@/lib/getSession";
 
 export const metadata: Metadata = {
   title: "Admin",
 };
 
-export default function Page() {
-  // TODO: Redirect non-admin users
+export default async function Page() {
+  const session = await getSession();
+  const user = session?.user;
+
+  if (!user) {
+    redirect("/api/auth/signin?callbackUrl=/admin");
+  }
+
+  if (user.role !== "admin") {
+    return (
+      <main className="mx-auto my-10">
+        <p className="text-center">You are not authorize to view this page</p>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto my-10 space-y-3">

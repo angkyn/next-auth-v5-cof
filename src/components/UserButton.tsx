@@ -1,5 +1,5 @@
 import avatarPlaceholder from "@/assets/images/avatar_placeholder.png";
-import { LogOut, Settings } from "lucide-react";
+import { Lock, LogOut, Settings } from "lucide-react";
 import { User } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { signOut } from "next-auth/react";
 
 interface UserButtonProps {
   user: User;
@@ -42,18 +43,21 @@ export default function UserButton({ user }: UserButtonProps) {
               <span>Settings</span>
             </Link>
           </DropdownMenuItem>
-          {/* TODO: Show this only for admins */}
-          {/* <DropdownMenuItem asChild>
-                <Link href="/admin">
-                  <Lock className="mr-2 h-4 w-4" />
-                  Admin
-                </Link>
-              </DropdownMenuItem> */}
+          {user.role === "admin" && (
+            <DropdownMenuItem asChild>
+              <Link href="/admin">
+                <Lock className="mr-2 h-4 w-4" />
+                Admin
+              </Link>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          {/* TODO: Add a logout functionality */}
-          <button className="flex w-full items-center">
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="flex w-full items-center"
+          >
             <LogOut className="mr-2 h-4 w-4" /> Sign Out
           </button>
         </DropdownMenuItem>
